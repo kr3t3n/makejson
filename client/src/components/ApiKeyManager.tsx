@@ -49,9 +49,9 @@ export default function ApiKeyManager({ onModelSelect, selectedModel }: ApiKeyMa
   const hasKey = hasApiKey(selectedModel);
 
   const models = [
-    { id: "openai", name: "GPT-4o-mini", icon: "/img/openai.svg" },
-    { id: "anthropic", name: "3.5 Haiku", icon: "/img/anthropic.svg" },
-    { id: "gemini", name: "2.0 Flash", icon: "/img/gemini.svg" },
+    { id: "openai", name: "GPT-4o-mini", icon: "./img/openai.svg" },
+    { id: "anthropic", name: "3.5 Haiku", icon: "./img/anthropic.svg" },
+    { id: "gemini", name: "2.0 Flash", icon: "./img/gemini.svg" },
   ] as const;
 
   return (
