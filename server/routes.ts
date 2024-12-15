@@ -23,6 +23,9 @@ export function registerRoutes(app: Express): Server {
         return res.status(400).send('No file uploaded');
       }
 
+      // Initialize contents array to store file data
+      let contents: { filename: string; content: string }[] = [];
+      
       // Extract content based on file type
       let fileContent: string;
       const fileType = req.file.originalname.split('.').pop()?.toLowerCase();
