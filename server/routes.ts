@@ -29,12 +29,20 @@ export function registerRoutes(app: Express): Server {
       try {
         if (fileType === 'docx') {
           const mammoth = await import('mammoth');
-          const result = await mammoth.extractRawText({ buffer: req.file.buffer });
-          fileContent = result.value;
+          try {
+            const result = await mammoth.extractRawText({ buffer: req.file.buffer });
+            fileContent = result.value;
+          } catch (docxError) {
+            throw new Error(`Invalid DOCX file format: ${docxError.message}`);
+          }
         } else if (fileType === 'pdf') {
-          const pdfParse = await import('pdf-parse');
-          const data = await pdfParse.default(req.file.buffer);
-          fileContent = data.text;
+          const { default: pdfParse } = await import('pdf-parse/lib/pdf-parse.js');
+          try {
+            const data = await pdfParse(req.file.buffer);
+            fileContent = data.text;
+          } catch (pdfError) {
+            throw new Error(`Invalid PDF file format: ${pdfError.message}`);
+          }
         } else {
           // For text files, read directly
           fileContent = req.file.buffer.toString('utf-8');
