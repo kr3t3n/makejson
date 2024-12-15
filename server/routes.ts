@@ -205,17 +205,19 @@ export function registerRoutes(app: Express): Server {
       }
 
       // Create transporter with more detailed error handling
+      // Try to connect with more permissive settings
       const transporter = nodemailer.createTransport({
         host: process.env.SMTP_HOST,
         port: parseInt(process.env.SMTP_PORT),
-        secure: true,
+        secure: false, // Try without SSL first
         auth: {
           user: process.env.SMTP_USER,
           pass: process.env.SMTP_PASS,
         },
+        requireTLS: true,
         tls: {
           rejectUnauthorized: false,
-          minVersion: 'TLSv1'  // Allow older TLS versions
+          minVersion: 'TLSv1'
         }
       });
 
