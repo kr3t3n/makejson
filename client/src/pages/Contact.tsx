@@ -14,7 +14,7 @@ export default function Contact() {
           
           <h2>Email</h2>
           <p>
-            For general inquiries: <a href="mailto:contact@makejson.online">contact@makejson.online</a>
+            For general inquiries: <a href="mailto:hello@makejson.online">hello@makejson.online</a>
           </p>
           
           <h2>Social Media</h2>
@@ -23,12 +23,12 @@ export default function Contact() {
           </p>
           <ul>
             <li>
-              <a href="https://twitter.com/makejsononline" target="_blank" rel="noopener noreferrer">
-                Twitter
+              <a href="https://x.com/georgipep" target="_blank" rel="noopener noreferrer">
+                X
               </a>
             </li>
             <li>
-              <a href="https://github.com/makejsononline" target="_blank" rel="noopener noreferrer">
+              <a href="https://github.com/kr3t3n" target="_blank" rel="noopener noreferrer">
                 GitHub
               </a>
             </li>

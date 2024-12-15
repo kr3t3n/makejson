@@ -31,7 +31,7 @@ export default function Footer() {
             rel="noopener noreferrer"
             className="text-sm text-muted-foreground hover:text-primary transition-colors"
           >
-            Like makejson.online? Buy us a ☕
+            Like makejson.online? Buy me a ☕
           </a>
           <p className="text-sm text-muted-foreground">
             Created by{' '}
@@ -39,7 +39,7 @@ export default function Footer() {
               href="https://x.com/georgipep"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary hover:underline"
+              className="text-primary dark:text-primary/90 hover:underline dark:hover:text-primary"
             >
               Georgi
             </a>

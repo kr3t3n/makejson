@@ -18,18 +18,24 @@ type ProcessingFile = {
   error?: string;
 };
 
-export default function Home() {
-  const [files, setFiles] = useState<ProcessingFile[]>([]);
+interface HomeProps {
+  selectedModel: AiModel;
+  onModelSelect: (model: AiModel) => void;
+}
+
+export default function Home({ selectedModel, onModelSelect }: HomeProps) {
+  const [files, setFiles] = useState<Array<ProcessingFile & { file?: File }>>([]);
   const [selectedResult, setSelectedResult] = useState<any>(null);
-  const [selectedModel, setSelectedModel] = useState<AiModel>("openai");
   const { toast } = useToast();
 
   const handleFilesUploaded = (newFiles: File[]) => {
     const fileUpdates = newFiles.map(file => ({
       id: crypto.randomUUID(),
       name: file.name,
-      file, // Store the File object for later processing
-      status: 'unprocessed' as const
+      file,
+      status: 'unprocessed' as 'processing' | 'complete' | 'error',
+      result: undefined,
+      error: undefined
     }));
     
     setFiles(prev => [...prev, ...fileUpdates]);
@@ -101,7 +107,7 @@ export default function Home() {
         <div className="max-w-3xl mx-auto">
           <ApiKeyManager
             selectedModel={selectedModel}
-            onModelSelect={setSelectedModel}
+            onModelSelect={onModelSelect}
           />
         </div>
       </div>
@@ -115,7 +121,7 @@ export default function Home() {
           <CardContent className="px-2 pb-3">
             <ApiKeyManager
               selectedModel={selectedModel}
-              onModelSelect={setSelectedModel}
+              onModelSelect={onModelSelect}
             />
           </CardContent>
         </Card>
