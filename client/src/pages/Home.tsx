@@ -6,6 +6,8 @@ import JSONPreview from "../components/JSONPreview";
 import ProcessingStatus from "../components/ProcessingStatus";
 import { AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import ApiKeyManager, { type AiModel } from "../components/ApiKeyManager";
+import { getApiKey } from "@/lib/keyStorage";
 
 type ProcessingFile = {
   id: string;
@@ -18,6 +20,7 @@ type ProcessingFile = {
 export default function Home() {
   const [files, setFiles] = useState<ProcessingFile[]>([]);
   const [selectedResult, setSelectedResult] = useState<any>(null);
+  const [selectedModel, setSelectedModel] = useState<AiModel>("openai");
   const { toast } = useToast();
 
   const handleFilesUploaded = async (newFiles: File[]) => {
@@ -33,8 +36,15 @@ export default function Home() {
       const file = newFiles[i];
       const fileUpdate = fileUpdates[i];
 
+      const apiKey = getApiKey(selectedModel);
+      if (!apiKey) {
+        throw new Error(`Please set your ${selectedModel.toUpperCase()} API key first`);
+      }
+
       const formData = new FormData();
       formData.append('file', file);
+      formData.append('model', selectedModel);
+      formData.append('apiKey', apiKey);
 
       try {
         const response = await fetch('/api/process', {
@@ -86,6 +96,11 @@ export default function Home() {
 
         <div className="grid md:grid-cols-2 gap-8">
           <div className="space-y-4">
+            <ApiKeyManager
+              selectedModel={selectedModel}
+              onModelSelect={setSelectedModel}
+            />
+
             <Card>
               <CardHeader>
                 <CardTitle>Upload Files</CardTitle>

@@ -2,7 +2,7 @@ import type { Express, Request } from "express";
 import { createServer, type Server } from "http";
 import multer from "multer";
 import type { Multer } from "multer";
-import { processTextWithAI } from "./lib/openai";
+import { processText } from "./lib/aiProcessor";
 
 const upload = multer({
   limits: {
@@ -26,7 +26,14 @@ export function registerRoutes(app: Express): Server {
       const fileContent = req.file.buffer.toString('utf-8');
       
       // Process with OpenAI
-      const result = await processTextWithAI(fileContent);
+      const model = req.body.model || 'openai';
+      const apiKey = req.body.apiKey;
+      
+      if (!apiKey) {
+        return res.status(400).send('API key is required');
+      }
+
+      const result = await processText(fileContent, model, apiKey);
       
       res.json(result);
     } catch (error: any) {
