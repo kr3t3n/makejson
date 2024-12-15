@@ -4,16 +4,19 @@ import OpenAI from "openai";
 export async function processTextWithOpenAI(text: string, apiKey: string): Promise<any> {
   const openai = new OpenAI({ apiKey });
   try {
+    // Clean the text content - remove control characters
+    const cleanedText = text.replace(/[\x00-\x1F\x7F-\x9F]/g, ' ');
+
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
         {
           role: "system",
-          content: "You are a data structuring assistant. Convert the input text into a well-structured JSON format that captures all the important information. The structure should be logical and hierarchical.",
+          content: "You are a data structuring assistant. Your task is to convert the input text into a clean, valid JSON format. Follow these rules:\n1. Extract key information and organize it hierarchically\n2. Use simple data types (strings, numbers, arrays)\n3. Ensure all text is properly escaped\n4. Remove any control characters or invalid JSON characters",
         },
         {
           role: "user",
-          content: text,
+          content: cleanedText,
         },
       ],
       response_format: { type: "json_object" },
@@ -23,9 +26,15 @@ export async function processTextWithOpenAI(text: string, apiKey: string): Promi
     if (!content) {
       throw new Error('No content returned from OpenAI');
     }
-    return JSON.parse(content);
+
+    try {
+      return JSON.parse(content);
+    } catch (parseError) {
+      console.error('JSON parsing error:', content);
+      throw new Error('Failed to parse AI response as JSON. The response might contain invalid characters.');
+    }
   } catch (error: any) {
     console.error('OpenAI API error:', error);
-    throw new Error('Failed to process text with AI: ' + error.message);
+    throw new Error('Failed to process text with OpenAI: ' + error.message);
   }
 }
