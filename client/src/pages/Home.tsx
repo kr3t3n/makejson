@@ -90,15 +90,19 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center justify-between py-4">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">AI Data Structuring</h1>
-            <p className="text-sm text-muted-foreground">Convert your documents to structured JSON using AI</p>
+        <div className="container flex h-20 items-center justify-between">
+          <div className="flex-shrink-0">
+            <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+              AI Data Structuring
+            </h1>
+            <p className="text-sm text-muted-foreground mt-1">
+              Convert your documents to structured JSON using AI
+            </p>
           </div>
-          <div className="hidden md:block w-[400px]">
+          <div className="hidden md:block w-[450px] ml-8">
             <ApiKeyManager
               selectedModel={selectedModel}
               onModelSelect={setSelectedModel}
@@ -108,10 +112,10 @@ export default function Home() {
       </header>
 
       {/* Mobile API Config */}
-      <div className="md:hidden p-4">
-        <Card>
-          <CardHeader>
-            <CardTitle>API Configuration</CardTitle>
+      <div className="md:hidden px-4 pt-4">
+        <Card className="shadow-sm">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg">API Configuration</CardTitle>
           </CardHeader>
           <CardContent>
             <ApiKeyManager
@@ -123,51 +127,55 @@ export default function Home() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 container py-6 gap-6 md:grid md:grid-cols-[300px_1fr]">
-        {/* Sidebar */}
-        <aside className="flex flex-col gap-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Upload Files</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <FileUpload onFilesUploaded={handleFilesUploaded} />
-            </CardContent>
-          </Card>
+      <div className="flex-1 container py-6 md:py-8">
+        <div className="grid md:grid-cols-[320px_1fr] gap-6 md:gap-8">
+          {/* Sidebar */}
+          <aside className="space-y-6">
+            <Card className="shadow-sm">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-lg">Upload Files</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <FileUpload onFilesUploaded={handleFilesUploaded} />
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Processing Status</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ProcessingStatus 
-                files={files}
-                onSelectResult={(result) => setSelectedResult(result)}
-              />
-            </CardContent>
-          </Card>
-        </aside>
+            <Card className="shadow-sm">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-lg">Processing Status</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ProcessingStatus 
+                  files={files}
+                  onSelectResult={(result) => setSelectedResult(result)}
+                />
+              </CardContent>
+            </Card>
+          </aside>
 
-        {/* Main Content - JSON Preview */}
-        <main>
-          <Card className="h-[calc(100vh-10rem)] flex flex-col">
-            <CardHeader>
-              <CardTitle>JSON Preview</CardTitle>
-            </CardHeader>
-            <CardContent className="flex-1 min-h-0">
-              {selectedResult ? (
-                <JSONPreview data={selectedResult} />
-              ) : (
-                <Alert>
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription>
-                    Select a processed file to view its JSON structure
-                  </AlertDescription>
-                </Alert>
-              )}
-            </CardContent>
-          </Card>
-        </main>
+          {/* Main Content - JSON Preview */}
+          <main>
+            <Card className="shadow-sm h-[calc(100vh-8rem)] md:h-[calc(100vh-9rem)] flex flex-col">
+              <CardHeader className="pb-2 border-b">
+                <CardTitle className="text-lg">JSON Preview</CardTitle>
+              </CardHeader>
+              <CardContent className="flex-1 min-h-0 p-0">
+                {selectedResult ? (
+                  <JSONPreview data={selectedResult} />
+                ) : (
+                  <div className="h-full flex items-center justify-center p-6">
+                    <Alert className="max-w-md">
+                      <AlertCircle className="h-4 w-4" />
+                      <AlertDescription>
+                        Select a processed file to view its JSON structure
+                      </AlertDescription>
+                    </Alert>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </main>
+        </div>
       </div>
     </div>
   );
