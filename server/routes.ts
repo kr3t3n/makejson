@@ -26,13 +26,47 @@ export function registerRoutes(app: Express): Server {
       let fileContent: string;
       const fileType = req.file.originalname.split('.').pop()?.toLowerCase();
 
-      if (fileType === 'docx') {
-        const mammoth = await import('mammoth');
-        const result = await mammoth.extractRawText({ buffer: req.file.buffer });
-        fileContent = result.value;
-      } else {
-        // For text files, read directly
-        fileContent = req.file.buffer.toString('utf-8');
+      try {
+        if (fileType === 'docx') {
+          const mammoth = await import('mammoth');
+          const result = await mammoth.extractRawText({ buffer: req.file.buffer });
+          fileContent = result.value;
+        } else if (fileType === 'pdf') {
+          const pdfParse = await import('pdf-parse');
+          const data = await pdfParse.default(req.file.buffer);
+          fileContent = data.text;
+        } else {
+          // For text files, read directly
+          fileContent = req.file.buffer.toString('utf-8');
+        }
+
+        // Split content into chunks if it's too large (roughly 100k characters per chunk)
+        const CHUNK_SIZE = 100000;
+        if (fileContent.length > CHUNK_SIZE) {
+          // Find a good breaking point (end of paragraph or sentence)
+          const chunks = [];
+          let start = 0;
+          while (start < fileContent.length) {
+            let end = start + CHUNK_SIZE;
+            if (end < fileContent.length) {
+              // Try to find a paragraph break
+              const nextParagraph = fileContent.indexOf('\n\n', end);
+              const nextSentence = fileContent.indexOf('. ', end);
+              if (nextParagraph !== -1 && nextParagraph - end < 1000) {
+                end = nextParagraph;
+              } else if (nextSentence !== -1 && nextSentence - end < 1000) {
+                end = nextSentence + 1;
+              }
+            }
+            chunks.push(fileContent.slice(start, end));
+            start = end;
+          }
+          fileContent = chunks[0]; // Process only the first chunk for now
+          // TODO: Implement full chunk processing in future iterations
+        }
+      } catch (error) {
+        console.error('Error extracting text:', error);
+        throw new Error(`Failed to extract text from ${fileType.toUpperCase()} file: ${error.message}`);
       }
       
       // Process with OpenAI

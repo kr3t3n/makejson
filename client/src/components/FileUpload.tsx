@@ -13,7 +13,8 @@ export default function FileUpload({ onFilesUploaded }: FileUploadProps) {
       'text/plain': ['.txt'],
       'text/csv': ['.csv'],
       'application/pdf': ['.pdf'],
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx']
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
+      'application/pdf': ['.pdf']
     },
     multiple: true
   });
