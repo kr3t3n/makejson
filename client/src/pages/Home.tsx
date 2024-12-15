@@ -112,21 +112,6 @@ export default function Home({ selectedModel, onModelSelect }: HomeProps) {
         </div>
       </div>
 
-      {/* Mobile API Config */}
-      <div className="md:hidden px-4">
-        <Card className="shadow-sm">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg">API Configuration</CardTitle>
-          </CardHeader>
-          <CardContent className="px-2 pb-3">
-            <ApiKeyManager
-              selectedModel={selectedModel}
-              onModelSelect={onModelSelect}
-            />
-          </CardContent>
-        </Card>
-      </div>
-
       {/* Main Content */}
       <div className="flex-1 container py-4 md:py-8">
         <div className="grid md:grid-cols-[320px_1fr] gap-4 md:gap-8 px-4 md:px-8">
@@ -157,8 +142,8 @@ export default function Home({ selectedModel, onModelSelect }: HomeProps) {
 
           {/* Main Content - JSON Preview */}
           <main>
-            <Card className="shadow-sm h-[calc(100vh-8rem)] md:h-[calc(100vh-9rem)] flex flex-col">
-              <CardHeader className="pb-2 border-b">
+            <Card className="shadow-sm h-[calc(100vh-8rem)] md:h-[calc(100vh-9rem)] flex flex-col border-muted bg-card">
+              <CardHeader className="pb-2 border-b border-muted">
                 <CardTitle className="text-lg">JSON Preview</CardTitle>
               </CardHeader>
               <CardContent className="flex-1 min-h-0 p-0">

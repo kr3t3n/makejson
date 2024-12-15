@@ -65,7 +65,7 @@ export default function ApiKeyManager({ onModelSelect, selectedModel }: ApiKeyMa
                 variant={selectedModel === model.id ? "default" : "outline"}
                 className={cn(
                   "h-10 px-2 md:px-3 text-sm md:text-base",
-                  selectedModel === model.id && "shadow-sm bg-primary/90 hover:bg-primary dark:bg-primary/20 dark:text-primary dark:hover:bg-primary/30",
+                  selectedModel === model.id && "shadow-sm bg-primary/90 hover:bg-primary/100 text-primary-foreground dark:bg-primary/20 dark:text-primary dark:hover:bg-primary/30",
                   "flex items-center justify-center"
                 )}
                 onClick={() => onModelSelect(model.id as AiModel)}

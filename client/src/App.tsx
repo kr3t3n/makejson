@@ -17,14 +17,14 @@ function App() {
   return (
     <ThemeProvider>
       <div className="min-h-screen flex flex-col bg-background text-foreground">
-        <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <div className="container flex h-16 items-center justify-between px-4">
             <div className="flex items-center gap-4">
               <a href="/" className="flex-shrink-0">
-                <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/70 dark:from-primary/90 dark:to-primary/60 bg-clip-text text-transparent">
+                <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-primary/90 to-primary/70 dark:from-primary/90 dark:to-primary/70 bg-clip-text text-transparent">
                   makejson.online
                 </h1>
-                <p className="text-xs text-muted-foreground mt-0.5">
+                <p className="text-xs text-muted-foreground/90 mt-0.5">
                   Convert your documents to structured JSON using AI
                 </p>
               </a>
