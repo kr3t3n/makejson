@@ -73,6 +73,8 @@ export default function ApiKeyManager({ onModelSelect, selectedModel }: ApiKeyMa
                   src={model.icon}
                   alt={model.name}
                   className="h-5 w-5 mr-2"
+                  loading="eager"
+                  style={{ display: 'inline-block' }}
                 />
                 <span>{model.name}</span>
               </Button>
