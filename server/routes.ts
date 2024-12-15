@@ -95,37 +95,36 @@ export function registerRoutes(app: Express): Server {
           fileContent = chunks[0]; // Process only the first chunk for now
           // TODO: Implement full chunk processing in future iterations
         }
+
+        // Handle zip files
+        if (fileType === 'zip') {
+          try {
+            const zip = new AdmZip(req.file.buffer);
+            const zipEntries = zip.getEntries();
+
+            for (const entry of zipEntries) {
+              if (!entry.isDirectory) {
+                const content = entry.getData().toString('utf8');
+                contents.push({
+                  filename: entry.entryName,
+                  content
+                });
+              }
+            }
+          } catch (zipError) {
+            throw new Error(`Failed to extract zip file: ${zipError.message}`);
+          }
+        } else {
+          contents.push({
+            filename: req.file.originalname,
+            content: fileContent
+          });
+        }
       } catch (error) {
         console.error('Error extracting text:', error);
         throw new Error(`Failed to extract text from ${fileType.toUpperCase()} file: ${error.message}`);
       }
       
-      let contents: { filename: string; content: string }[] = [];
-
-      // Handle zip files
-      if (fileType === 'zip') {
-        try {
-          const zip = new AdmZip(req.file.buffer);
-          const zipEntries = zip.getEntries();
-
-          for (const entry of zipEntries) {
-            if (!entry.isDirectory) {
-              const content = entry.getData().toString('utf8');
-              contents.push({
-                filename: entry.entryName,
-                content
-              });
-            }
-          }
-        } catch (zipError) {
-          throw new Error(`Failed to extract zip file: ${zipError.message}`);
-        }
-      } else {
-        contents.push({
-          filename: req.file.originalname,
-          content: fileContent
-        });
-      }
 
       // Process with AI
       const model = req.body.model || 'openai';
