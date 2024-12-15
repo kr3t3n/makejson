@@ -93,7 +93,7 @@ export default function Home() {
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-20 items-center justify-between">
+        <div className="container flex h-20 items-center justify-between pl-8">
           <div className="flex-shrink-0">
             <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
               AI Data Structuring
@@ -102,7 +102,7 @@ export default function Home() {
               Convert your documents to structured JSON using AI
             </p>
           </div>
-          <div className="hidden md:block w-[450px] ml-8">
+          <div className="hidden md:block flex-1 max-w-3xl ml-8">
             <ApiKeyManager
               selectedModel={selectedModel}
               onModelSelect={setSelectedModel}
@@ -128,7 +128,7 @@ export default function Home() {
 
       {/* Main Content */}
       <div className="flex-1 container py-6 md:py-8">
-        <div className="grid md:grid-cols-[320px_1fr] gap-6 md:gap-8">
+        <div className="grid md:grid-cols-[320px_1fr] gap-6 md:gap-8 pl-8">
           {/* Sidebar */}
           <aside className="space-y-6">
             <Card className="shadow-sm">

@@ -1,17 +1,11 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { storeApiKey, hasApiKey, clearApiKey } from "@/lib/keyStorage";
-import { KeyRound, Eye, EyeOff, Trash } from "lucide-react";
+import { Eye, EyeOff, Trash } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 export type AiModel = "openai" | "anthropic" | "gemini";
 
@@ -54,40 +48,45 @@ export default function ApiKeyManager({ onModelSelect, selectedModel }: ApiKeyMa
 
   const hasKey = hasApiKey(selectedModel);
 
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <KeyRound className="h-5 w-5" />
-          API Configuration
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Select AI Model</label>
-          <Select value={selectedModel} onValueChange={onModelSelect}>
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="openai">OpenAI GPT-4o-mini</SelectItem>
-              <SelectItem value="anthropic">Anthropic Claude 3.5 Haiku</SelectItem>
-              <SelectItem value="gemini">Google Gemini 2 Flash</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+  const models = [
+    { id: "openai", name: "OpenAI", icon: "/img/openai.svg" },
+    { id: "anthropic", name: "Anthropic", icon: "/img/anthropic.svg" },
+    { id: "gemini", name: "Gemini", icon: "/img/gemini.svg" },
+  ] as const;
 
-        <div className="space-y-2">
-          <label className="text-sm font-medium">
-            {hasKey ? "Update API Key" : "Enter API Key"}
-          </label>
-          <div className="flex space-x-2">
+  return (
+    <Card className="border-0 shadow-none bg-transparent">
+      <CardContent className="p-0">
+        <div className="flex items-center gap-4">
+          <div className="flex gap-2">
+            {models.map((model) => (
+              <Button
+                key={model.id}
+                variant={selectedModel === model.id ? "default" : "outline"}
+                className={cn(
+                  "h-10 px-3",
+                  selectedModel === model.id && "shadow-sm"
+                )}
+                onClick={() => onModelSelect(model.id as AiModel)}
+              >
+                <img
+                  src={model.icon}
+                  alt={model.name}
+                  className="h-5 w-5 mr-2"
+                />
+                <span>{model.name}</span>
+              </Button>
+            ))}
+          </div>
+
+          <div className="flex-1 flex gap-2">
             <div className="relative flex-1">
               <Input
                 type={showKey ? "text" : "password"}
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
                 placeholder={hasKey ? "Enter new API key" : "Enter API key"}
+                className="pr-10"
               />
               <Button
                 variant="ghost"
@@ -112,7 +111,7 @@ export default function ApiKeyManager({ onModelSelect, selectedModel }: ApiKeyMa
         </div>
 
         {!hasKey && (
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground mt-2">
             Please enter your {selectedModel.toUpperCase()} API key to start processing files
           </p>
         )}
