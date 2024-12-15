@@ -38,7 +38,12 @@ export default function Home() {
 
       const apiKey = getApiKey(selectedModel);
       if (!apiKey) {
-        throw new Error(`Please set your ${selectedModel.toUpperCase()} API key first`);
+        toast({
+          variant: "destructive",
+          title: "API Key Required",
+          description: `Please set your ${selectedModel.toUpperCase()} API key first`
+        });
+        return;
       }
 
       const formData = new FormData();
