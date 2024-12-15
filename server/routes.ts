@@ -43,9 +43,31 @@ export function registerRoutes(app: Express): Server {
           } catch (pdfError) {
             throw new Error(`Invalid PDF file format: ${pdfError.message}`);
           }
+        } else if (fileType === 'xlsx') {
+          const XLSX = await import('xlsx');
+          try {
+            const workbook = XLSX.read(req.file.buffer);
+            const sheetNames = workbook.SheetNames;
+            let allText = '';
+            sheetNames.forEach(name => {
+              const sheet = workbook.Sheets[name];
+              allText += `Sheet: ${name}\n${XLSX.utils.sheet_to_csv(sheet)}\n\n`;
+            });
+            fileContent = allText;
+          } catch (xlsxError) {
+            throw new Error(`Invalid Excel file format: ${xlsxError.message}`);
+          }
         } else {
-          // For text files, read directly
-          fileContent = req.file.buffer.toString('utf-8');
+          // For text and code files, read directly
+          try {
+            fileContent = req.file.buffer.toString('utf-8');
+            // For code files, add file type context
+            if (['js', 'jsx', 'ts', 'tsx', 'css', 'html', 'php', 'sql', 'py', 'json', 'xml'].includes(fileType)) {
+              fileContent = `File type: ${fileType.toUpperCase()}\n\n${fileContent}`;
+            }
+          } catch (error) {
+            throw new Error(`Failed to read file: ${error.message}`);
+          }
         }
 
         // Split content into chunks if it's too large (roughly 100k characters per chunk)

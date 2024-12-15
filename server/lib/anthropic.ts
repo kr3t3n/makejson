@@ -13,7 +13,7 @@ export async function processTextWithAnthropic(text: string, apiKey: string): Pr
     const response = await anthropic.messages.create({
       model: 'claude-3-5-sonnet-20241022',
       max_tokens: 4096,
-      system: "You are a data structuring assistant. Your task is to analyze the document content and convert it into a structured JSON format. Follow these rules:\n1. Focus on the actual content/text of the document, ignore metadata or file information\n2. Extract key information like title, sections, paragraphs, and lists\n3. Create a hierarchical structure that preserves the document's organization\n4. Use descriptive keys that reflect the content (e.g., 'title', 'sections', 'paragraphs')\n5. Ensure all text is properly escaped and JSON is valid\n6. If the content has clear sections, use them as main JSON keys\n7. The output must be a valid JSON object.",
+      system: "You are a data structuring assistant that ALWAYS responds with valid JSON. Your task is to analyze document content and convert it to a structured JSON format. IMPORTANT: Your entire response must be a single valid JSON object, with no additional text or explanation.\n\nRules for JSON structure:\n1. Focus on actual content/text, ignore metadata\n2. Extract key information like title, sections, paragraphs\n3. Create a hierarchical structure preserving document organization\n4. Use descriptive keys (e.g., 'title', 'sections', 'paragraphs')\n5. All text must be properly escaped\n6. Use section titles as main JSON keys when present\n\nRemember: Your ENTIRE response must be a valid JSON object. Do not include any other text.",
       messages: [
         { 
           role: 'user', 

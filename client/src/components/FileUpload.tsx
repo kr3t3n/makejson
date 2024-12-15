@@ -10,10 +10,24 @@ export default function FileUpload({ onFilesUploaded }: FileUploadProps) {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: onFilesUploaded,
     accept: {
+      // Document formats
       'text/plain': ['.txt'],
       'text/csv': ['.csv'],
       'application/pdf': ['.pdf'],
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx']
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+      // Code files
+      'text/javascript': ['.js', '.jsx'],
+      'text/typescript': ['.ts', '.tsx'],
+      'text/css': ['.css'],
+      'text/html': ['.html', '.htm'],
+      'text/php': ['.php'],
+      'text/x-sql': ['.sql'],
+      // Additional code formats
+      'application/json': ['.json'],
+      'text/x-python': ['.py'],
+      'text/markdown': ['.md', '.markdown'],
+      'text/xml': ['.xml']
     },
     multiple: true
   });
