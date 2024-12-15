@@ -7,6 +7,11 @@ import { Eye, EyeOff, Trash } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
+// Import SVGs directly
+import openaiIcon from "@/assets/openai.svg";
+import anthropicIcon from "@/assets/anthropic.svg";
+import geminiIcon from "@/assets/gemini.svg";
+
 export type AiModel = "openai" | "anthropic" | "gemini";
 
 interface ApiKeyManagerProps {
@@ -49,9 +54,9 @@ export default function ApiKeyManager({ onModelSelect, selectedModel }: ApiKeyMa
   const hasKey = hasApiKey(selectedModel);
 
   const models = [
-    { id: "openai", name: "GPT-4o-mini", icon: "./img/openai.svg" },
-    { id: "anthropic", name: "3.5 Haiku", icon: "./img/anthropic.svg" },
-    { id: "gemini", name: "2.0 Flash", icon: "./img/gemini.svg" },
+    { id: "openai", name: "GPT-4o-mini", icon: openaiIcon },
+    { id: "anthropic", name: "3.5 Haiku", icon: anthropicIcon },
+    { id: "gemini", name: "2.0 Flash", icon: geminiIcon },
   ] as const;
 
   return (
