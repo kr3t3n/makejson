@@ -1,0 +1,67 @@
+{
+  "type": "multi_file",
+  "files": [
+    {
+      "filename": "Agency Business Case Rationale.docx",
+      "content": {
+        "error": "The input document appears to be corrupted or non-readable data. No structured information could be extracted."
+      }
+    },
+    {
+      "filename": "__MACOSX/._Agency Business Case Rationale.docx",
+      "content": {
+        "error": "The content provided does not contain meaningful text for structuring into JSON format."
+      }
+    },
+    {
+      "filename": "2024 Bytt AI Limited - Interim (2) Dividend Template & Board Minutes.pdf",
+      "content": {
+        "error": "The provided content is not in an adequate format for extraction and conversion."
+      }
+    },
+    {
+      "filename": "__MACOSX/._2024 Bytt AI Limited - Interim (2) Dividend Template & Board Minutes.pdf",
+      "content": {
+        "title": "Mac OS X Metadata",
+        "sections": {
+          "metadata": {
+            "attributes": [
+              {
+                "key": "ATTR",
+                "value": "�"
+              },
+              {
+                "key": "lastuseddate",
+                "value": "com.apple.lastuseddate#PS"
+              },
+              {
+                "key": "macl",
+                "value": "com.apple.macl"
+              },
+              {
+                "key": "kMDItemWhereFroms",
+                "value": "%com.apple.metadata:kMDItemWhereFroms"
+              },
+              {
+                "key": "kMDLabel",
+                "value": "com.apple.metadata:kMDLabel_czglzltd6vfvf56paxdbgvnw2a"
+              },
+              {
+                "key": "provenance",
+                "value": "com.apple.provenance"
+              },
+              {
+                "key": "quarantine",
+                "value": "com.apple.quarantine"
+              }
+            ]
+          },
+          "links": {
+            "url": "https://mail.proton.me/"
+          },
+          "binary_data": "bplist00� _"
+        }
+      }
+    },
+    {
+      "filename": "Business Plan from AInnovate.md",

@@ -106,11 +106,35 @@ export function registerRoutes(app: Express): Server {
             const zipEntries = zip.getEntries();
 
             for (const entry of zipEntries) {
-              if (!entry.isDirectory) {
-                const content = entry.getData().toString('utf8');
+              if (entry.isDirectory) continue;
+              
+              const fileType = entry.entryName.split('.').pop()?.toLowerCase();
+              const buffer = entry.getData();
+              let content: string;
+
+              try {
+                if (fileType === 'docx') {
+                  const mammoth = await import('mammoth');
+                  const result = await mammoth.extractRawText({ buffer });
+                  content = result.value;
+                } else if (fileType === 'pdf') {
+                  const { default: pdfParse } = await import('pdf-parse/lib/pdf-parse.js');
+                  const data = await pdfParse(buffer);
+                  content = data.text;
+                } else {
+                  // For text files, read as UTF-8
+                  content = buffer.toString('utf8');
+                }
+
                 contents.push({
                   filename: entry.entryName,
                   content
+                });
+              } catch (error) {
+                console.error(`Error processing ${entry.entryName}:`, error);
+                contents.push({
+                  filename: entry.entryName,
+                  content: `Error: Failed to process ${fileType} file: ${error.message}`
                 });
               }
             }
