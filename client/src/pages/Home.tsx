@@ -93,12 +93,12 @@ export default function Home() {
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-20 items-center justify-between pl-8">
+        <div className="container flex h-16 md:h-20 items-center justify-between px-4 md:px-8">
           <div className="flex-shrink-0">
-            <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
               AI Data Structuring
             </h1>
-            <p className="text-sm text-muted-foreground mt-1">
+            <p className="text-xs md:text-sm text-muted-foreground mt-0.5 md:mt-1">
               Convert your documents to structured JSON using AI
             </p>
           </div>
@@ -112,12 +112,12 @@ export default function Home() {
       </header>
 
       {/* Mobile API Config */}
-      <div className="md:hidden px-4 pt-4">
+      <div className="md:hidden px-4">
         <Card className="shadow-sm">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg">API Configuration</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-2 pb-3">
             <ApiKeyManager
               selectedModel={selectedModel}
               onModelSelect={setSelectedModel}
@@ -127,15 +127,15 @@ export default function Home() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 container py-6 md:py-8">
-        <div className="grid md:grid-cols-[320px_1fr] gap-6 md:gap-8 pl-8">
+      <div className="flex-1 container py-4 md:py-8">
+        <div className="grid md:grid-cols-[320px_1fr] gap-4 md:gap-8 px-4 md:px-8">
           {/* Sidebar */}
-          <aside className="space-y-6">
+          <aside className="space-y-4 md:space-y-6">
             <Card className="shadow-sm">
               <CardHeader className="pb-2">
                 <CardTitle className="text-lg">Upload Files</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="px-2 pb-3">
                 <FileUpload onFilesUploaded={handleFilesUploaded} />
               </CardContent>
             </Card>
@@ -144,7 +144,7 @@ export default function Home() {
               <CardHeader className="pb-2">
                 <CardTitle className="text-lg">Processing Status</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="px-2 pb-3">
                 <ProcessingStatus 
                   files={files}
                   onSelectResult={(result) => setSelectedResult(result)}
