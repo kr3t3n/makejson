@@ -11,7 +11,7 @@ export async function processTextWithAnthropic(text: string, apiKey: string): Pr
     const cleanedText = text.replace(/[\x00-\x1F\x7F-\x9F]/g, ' ');
 
     const response = await anthropic.messages.create({
-      model: 'claude-3-5-sonnet-20241022',
+      model: 'claude-3-5-haiku-latest',
       max_tokens: 4096,
       system: "You are a data structuring assistant that ALWAYS responds with valid JSON. Your task is to analyze document content and convert it to a structured JSON format. IMPORTANT: Your entire response must be a single valid JSON object, with no additional text or explanation.\n\nRules for JSON structure:\n1. Focus on actual content/text, ignore metadata\n2. Extract key information like title, sections, paragraphs\n3. Create a hierarchical structure preserving document organization\n4. Use descriptive keys (e.g., 'title', 'sections', 'paragraphs')\n5. All text must be properly escaped\n6. Use section titles as main JSON keys when present\n\nRemember: Your ENTIRE response must be a valid JSON object. Do not include any other text.",
       messages: [

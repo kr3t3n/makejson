@@ -8,7 +8,7 @@ export async function processTextWithOpenAI(text: string, apiKey: string): Promi
     const cleanedText = text.replace(/[\x00-\x1F\x7F-\x9F]/g, ' ');
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-4o-mini",
       messages: [
         {
           role: "system",
