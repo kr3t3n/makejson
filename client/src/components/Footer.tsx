@@ -26,7 +26,7 @@ export default function Footer() {
         </div>
         <div className="flex flex-col sm:flex-row items-center gap-4">
           <a
-            href="https://www.buymeacoffee.com/makejson"
+            href="https://www.buymeacoffee.com/georgipep"
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm text-muted-foreground hover:text-primary transition-colors"
@@ -36,12 +36,12 @@ export default function Footer() {
           <p className="text-sm text-muted-foreground">
             Created by{' '}
             <a
-              href="https://makejson.online"
+              href="https://x.com/georgipep"
               target="_blank"
               rel="noopener noreferrer"
               className="text-primary hover:underline"
             >
-              makejson.online team
+              Georgi
             </a>
           </p>
         </div>

@@ -10,7 +10,7 @@ export default function Terms() {
         <CardContent className="prose dark:prose-invert">
           <h2>1. Terms</h2>
           <p>
-            By accessing makejson.online, you agree to be bound by these terms of service and agree that you are responsible for compliance with any applicable local laws.
+            By accessing makejson.online, operated by Mangia Studios Limited, you agree to be bound by these terms of service and agree that you are responsible for compliance with any applicable local laws.
           </p>
 
           <h2>2. Use License</h2>

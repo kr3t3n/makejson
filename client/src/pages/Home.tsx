@@ -97,28 +97,14 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 md:h-20 items-center justify-between px-4 md:px-8">
-          <div className="flex items-center gap-4">
-            <div className="flex-shrink-0">
-              <h1 className="text-2xl md:text-3xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-                makejson.online
-              </h1>
-              <p className="text-xs md:text-sm text-muted-foreground mt-0.5 md:mt-1">
-                Convert your documents to structured JSON using AI
-              </p>
-            </div>
-            <ThemeToggle />
-          </div>
-          <div className="hidden md:block flex-1 max-w-3xl ml-8">
-            <ApiKeyManager
-              selectedModel={selectedModel}
-              onModelSelect={setSelectedModel}
-            />
-          </div>
+      <div className="container py-4">
+        <div className="max-w-3xl mx-auto">
+          <ApiKeyManager
+            selectedModel={selectedModel}
+            onModelSelect={setSelectedModel}
+          />
         </div>
-      </header>
+      </div>
 
       {/* Mobile API Config */}
       <div className="md:hidden px-4">

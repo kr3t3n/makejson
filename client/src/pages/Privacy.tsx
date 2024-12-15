@@ -24,7 +24,7 @@ export default function Privacy() {
 
           <h2>3. Third-party Services</h2>
           <p>
-            We use third-party AI services (OpenAI, Anthropic, Google) for processing your files. Please refer to their respective privacy policies for information about how they handle your data.
+            We use third-party AI services (OpenAI, Anthropic, Google) for processing your files. Please refer to their respective privacy policies for information about how they handle your data. makejson.online is operated by Mangia Studios Limited.
           </p>
         </CardContent>
       </Card>
