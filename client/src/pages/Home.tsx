@@ -90,45 +90,67 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
-      <div className="max-w-6xl mx-auto space-y-8">
-        <div className="space-y-2">
-          <h1 className="text-4xl font-bold tracking-tight">AI Data Structuring</h1>
-          <p className="text-muted-foreground">
-            Convert your documents to structured JSON using AI
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-8">
-          <div className="space-y-4">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      {/* Header */}
+      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-16 items-center justify-between py-4">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">AI Data Structuring</h1>
+            <p className="text-sm text-muted-foreground">Convert your documents to structured JSON using AI</p>
+          </div>
+          <div className="hidden md:block w-[400px]">
             <ApiKeyManager
               selectedModel={selectedModel}
               onModelSelect={setSelectedModel}
             />
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Upload Files</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <FileUpload onFilesUploaded={handleFilesUploaded} />
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Processing Status</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ProcessingStatus 
-                  files={files}
-                  onSelectResult={(result) => setSelectedResult(result)}
-                />
-              </CardContent>
-            </Card>
           </div>
+        </div>
+      </header>
 
-          <Card className="h-[calc(100vh-12rem)] flex flex-col">
+      {/* Mobile API Config */}
+      <div className="md:hidden p-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>API Configuration</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ApiKeyManager
+              selectedModel={selectedModel}
+              onModelSelect={setSelectedModel}
+            />
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 container py-6 gap-6 md:grid md:grid-cols-[300px_1fr]">
+        {/* Sidebar */}
+        <aside className="flex flex-col gap-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Upload Files</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <FileUpload onFilesUploaded={handleFilesUploaded} />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Processing Status</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ProcessingStatus 
+                files={files}
+                onSelectResult={(result) => setSelectedResult(result)}
+              />
+            </CardContent>
+          </Card>
+        </aside>
+
+        {/* Main Content - JSON Preview */}
+        <main>
+          <Card className="h-[calc(100vh-10rem)] flex flex-col">
             <CardHeader>
               <CardTitle>JSON Preview</CardTitle>
             </CardHeader>
@@ -145,7 +167,7 @@ export default function Home() {
               )}
             </CardContent>
           </Card>
-        </div>
+        </main>
       </div>
     </div>
   );
