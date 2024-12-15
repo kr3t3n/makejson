@@ -57,14 +57,14 @@ export default function ApiKeyManager({ onModelSelect, selectedModel }: ApiKeyMa
   return (
     <Card className="border-0 shadow-none bg-transparent">
       <CardContent className="p-0">
-        <div className="flex items-center gap-4">
-          <div className="flex gap-2">
+        <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4">
+          <div className="grid grid-cols-3 md:flex gap-2">
             {models.map((model) => (
               <Button
                 key={model.id}
                 variant={selectedModel === model.id ? "default" : "outline"}
                 className={cn(
-                  "h-10 px-3",
+                  "h-10 px-2 md:px-3 text-sm md:text-base",
                   selectedModel === model.id && "shadow-sm"
                 )}
                 onClick={() => onModelSelect(model.id as AiModel)}
@@ -72,23 +72,23 @@ export default function ApiKeyManager({ onModelSelect, selectedModel }: ApiKeyMa
                 <img
                   src={model.icon}
                   alt={model.name}
-                  className="h-5 w-5 mr-2"
+                  className="h-4 w-4 md:h-5 md:w-5 mr-1.5 md:mr-2"
                   loading="eager"
                   style={{ display: 'inline-block' }}
                 />
-                <span>{model.name}</span>
+                <span className="text-xs md:text-sm whitespace-nowrap">{model.name}</span>
               </Button>
             ))}
           </div>
 
-          <div className="flex-1 flex gap-2">
+          <div className="flex gap-2 mt-2 md:mt-0 md:flex-1">
             <div className="relative flex-1">
               <Input
                 type={showKey ? "text" : "password"}
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
                 placeholder={hasKey ? "Enter new API key" : "Enter API key"}
-                className="pr-10"
+                className="pr-10 text-sm"
               />
               <Button
                 variant="ghost"
@@ -103,7 +103,7 @@ export default function ApiKeyManager({ onModelSelect, selectedModel }: ApiKeyMa
                 )}
               </Button>
             </div>
-            <Button onClick={handleSaveKey}>Save</Button>
+            <Button onClick={handleSaveKey} className="whitespace-nowrap">Save</Button>
             {hasKey && (
               <Button variant="destructive" size="icon" onClick={handleClearKey}>
                 <Trash className="h-4 w-4" />
