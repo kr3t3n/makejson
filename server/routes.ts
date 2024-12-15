@@ -199,6 +199,12 @@ export function registerRoutes(app: Express): Server {
         throw new Error('SMTP configuration is missing');
       }
 
+      // Validate input
+      if (!name || !email || !message) {
+        return res.status(400).json({ error: 'Name, email and message are required' });
+      }
+
+      // Create transporter with more detailed error handling
       const transporter = nodemailer.createTransport({
         host: process.env.SMTP_HOST,
         port: parseInt(process.env.SMTP_PORT),
@@ -208,9 +214,18 @@ export function registerRoutes(app: Express): Server {
           pass: process.env.SMTP_PASS,
         },
         tls: {
-          rejectUnauthorized: false
+          rejectUnauthorized: false,
+          minVersion: 'TLSv1'  // Allow older TLS versions
         }
       });
+
+      // Verify connection configuration
+      try {
+        await transporter.verify();
+      } catch (verifyError: any) {
+        console.error('SMTP Verification Error:', verifyError);
+        throw new Error(`Failed to connect to SMTP server: ${verifyError.message}`);
+      }
 
       await transporter.sendMail({
         from: process.env.SMTP_USER,
