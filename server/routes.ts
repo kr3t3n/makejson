@@ -4,6 +4,7 @@ import multer from "multer";
 import type { Multer } from "multer";
 import { processText } from "./lib/aiProcessor";
 import AdmZip from "adm-zip";
+import nodemailer from "nodemailer";
 
 const upload = multer({
   limits: {
@@ -189,5 +190,45 @@ export function registerRoutes(app: Express): Server {
   });
 
   const httpServer = createServer(app);
+  // Contact form submission endpoint
+  app.post('/api/contact', async (req, res) => {
+    try {
+      const { name, email, message } = req.body;
+
+      if (!process.env.SMTP_HOST || !process.env.SMTP_PORT || !process.env.SMTP_USER || !process.env.SMTP_PASS || !process.env.CONTACT_EMAIL) {
+        throw new Error('SMTP configuration is missing');
+      }
+
+      const transporter = nodemailer.createTransport({
+        host: process.env.SMTP_HOST,
+        port: parseInt(process.env.SMTP_PORT),
+        secure: true,
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS,
+        },
+      });
+
+      await transporter.sendMail({
+        from: process.env.SMTP_USER,
+        to: process.env.CONTACT_EMAIL,
+        subject: `Contact Form: Message from ${name}`,
+        text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
+        html: `
+          <h2>New Contact Form Submission</h2>
+          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <h3>Message:</h3>
+          <p>${message.replace(/\n/g, '<br>')}</p>
+        `,
+      });
+
+      res.json({ message: 'Message sent successfully' });
+    } catch (error: any) {
+      console.error('Error sending email:', error);
+      res.status(500).json({ error: 'Failed to send message' });
+    }
+  });
+
   return httpServer;
 }
