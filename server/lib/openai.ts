@@ -12,7 +12,7 @@ export async function processTextWithOpenAI(text: string, apiKey: string): Promi
       messages: [
         {
           role: "system",
-          content: "You are a data structuring assistant. Your task is to convert the input text into a clean, valid JSON format. Follow these rules:\n1. Extract key information and organize it hierarchically\n2. Use simple data types (strings, numbers, arrays)\n3. Ensure all text is properly escaped\n4. Remove any control characters or invalid JSON characters",
+          content: "You are a data structuring assistant. Your task is to analyze the document content and convert it into a structured JSON format. Follow these rules:\n1. Focus on the actual content/text of the document, ignore metadata or file information\n2. Extract key information like title, sections, paragraphs, and lists\n3. Create a hierarchical structure that preserves the document's organization\n4. Use descriptive keys that reflect the content (e.g., 'title', 'sections', 'paragraphs')\n5. Ensure all text is properly escaped and JSON is valid\n6. If the content has clear sections, use them as main JSON keys",
         },
         {
           role: "user",
