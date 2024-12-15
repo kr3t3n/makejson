@@ -65,7 +65,7 @@ export default function ApiKeyManager({ onModelSelect, selectedModel }: ApiKeyMa
                 variant={selectedModel === model.id ? "default" : "outline"}
                 className={cn(
                   "h-10 px-2 md:px-3 text-sm md:text-base",
-                  selectedModel === model.id && "shadow-sm bg-primary/90 hover:bg-primary/100 text-primary-foreground dark:bg-primary/95 dark:text-primary-foreground dark:hover:bg-primary",
+                  selectedModel === model.id && "shadow-sm bg-primary/90 hover:bg-primary/100 text-primary-foreground dark:bg-white/90 dark:text-background dark:hover:bg-white",
                   "flex items-center justify-center"
                 )}
                 onClick={() => onModelSelect(model.id as AiModel)}
@@ -104,7 +104,7 @@ export default function ApiKeyManager({ onModelSelect, selectedModel }: ApiKeyMa
                 )}
               </Button>
             </div>
-            <Button onClick={handleSaveKey} className="whitespace-nowrap bg-primary dark:bg-primary/95 dark:text-primary-foreground dark:hover:bg-primary">Save</Button>
+            <Button onClick={handleSaveKey} className="whitespace-nowrap bg-primary dark:bg-white/90 dark:text-background dark:hover:bg-white">Save</Button>
             {hasKey && (
               <Button variant="destructive" size="icon" onClick={handleClearKey}>
                 <Trash className="h-4 w-4" />
