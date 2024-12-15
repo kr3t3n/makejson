@@ -103,14 +103,7 @@ export default function Home({ selectedModel, onModelSelect }: HomeProps) {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <div className="container py-4">
-        <div className="max-w-3xl mx-auto">
-          <ApiKeyManager
-            selectedModel={selectedModel}
-            onModelSelect={onModelSelect}
-          />
-        </div>
-      </div>
+      
 
       {/* Main Content */}
       <div className="flex-1 container py-4 md:py-8">
