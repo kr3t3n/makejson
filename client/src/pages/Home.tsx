@@ -23,69 +23,74 @@ export default function Home() {
   const [selectedModel, setSelectedModel] = useState<AiModel>("openai");
   const { toast } = useToast();
 
-  const handleFilesUploaded = async (newFiles: File[]) => {
+  const handleFilesUploaded = (newFiles: File[]) => {
     const fileUpdates = newFiles.map(file => ({
       id: crypto.randomUUID(),
       name: file.name,
-      status: 'processing' as const
+      file, // Store the File object for later processing
+      status: 'unprocessed' as const
     }));
     
     setFiles(prev => [...prev, ...fileUpdates]);
+  };
 
-    for (let i = 0; i < newFiles.length; i++) {
-      const file = newFiles[i];
-      const fileUpdate = fileUpdates[i];
+  const handleProcess = async (fileId: string) => {
+    const fileToProcess = files.find(f => f.id === fileId);
+    if (!fileToProcess || !('file' in fileToProcess)) return;
 
-      const apiKey = getApiKey(selectedModel);
-      if (!apiKey) {
-        toast({
-          variant: "destructive",
-          title: "API Key Required",
-          description: `Please set your ${selectedModel.toUpperCase()} API key first`
-        });
-        return;
+    const apiKey = getApiKey(selectedModel);
+    if (!apiKey) {
+      toast({
+        variant: "destructive",
+        title: "API Key Required",
+        description: `Please set your ${selectedModel.toUpperCase()} API key first`
+      });
+      return;
+    }
+
+    setFiles(prev => prev.map(f => 
+      f.id === fileId ? { ...f, status: 'processing' } : f
+    ));
+
+    const formData = new FormData();
+    formData.append('file', fileToProcess.file);
+    formData.append('model', selectedModel);
+    formData.append('apiKey', apiKey);
+
+    try {
+      const response = await fetch('/api/process', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!response.ok) {
+        throw new Error(await response.text());
       }
 
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('model', selectedModel);
-      formData.append('apiKey', apiKey);
+      const result = await response.json();
 
-      try {
-        const response = await fetch('/api/process', {
-          method: 'POST',
-          body: formData
-        });
+      setFiles(prev => prev.map(f => 
+        f.id === fileId 
+          ? { ...f, status: 'complete', result }
+          : f
+      ));
 
-        if (!response.ok) {
-          throw new Error(await response.text());
-        }
+      toast({
+        title: "File processed successfully",
+        description: fileToProcess.name
+      });
+    } catch (error: any) {
+      setFiles(prev => prev.map(f => 
+        f.id === fileId 
+          ? { ...f, status: 'error', error: error.message }
+          : f
+      ));
 
-        const result = await response.json();
-
-        setFiles(prev => prev.map(f => 
-          f.id === fileUpdate.id 
-            ? { ...f, status: 'complete', result }
-            : f
-        ));
-
-        toast({
-          title: "File processed successfully",
-          description: file.name
-        });
-      } catch (error) {
-        setFiles(prev => prev.map(f => 
-          f.id === fileUpdate.id 
-            ? { ...f, status: 'error', error: error.message }
-            : f
-        ));
-
-        toast({
-          variant: "destructive",
-          title: "Error processing file",
-          description: error.message
-        });
-      }
+      toast({
+        variant: "destructive",
+        title: "Error processing file",
+        description: error.message
+      });
     }
   };
 
@@ -148,6 +153,7 @@ export default function Home() {
                 <ProcessingStatus 
                   files={files}
                   onSelectResult={(result) => setSelectedResult(result)}
+                  onProcess={handleProcess}
                 />
               </CardContent>
             </Card>

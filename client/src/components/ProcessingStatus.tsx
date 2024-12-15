@@ -7,14 +7,15 @@ interface ProcessingStatusProps {
   files: Array<{
     id: string;
     name: string;
-    status: 'processing' | 'complete' | 'error';
+    status: 'unprocessed' | 'processing' | 'complete' | 'error';
     result?: any;
     error?: string;
   }>;
   onSelectResult: (result: any) => void;
+  onProcess: (fileId: string) => void;
 }
 
-export default function ProcessingStatus({ files, onSelectResult }: ProcessingStatusProps) {
+export default function ProcessingStatus({ files, onSelectResult, onProcess }: ProcessingStatusProps) {
   if (files.length === 0) {
     return (
       <div className="text-center py-8 text-muted-foreground">
@@ -49,15 +50,26 @@ export default function ProcessingStatus({ files, onSelectResult }: ProcessingSt
               </span>
             </div>
 
-            {file.status === 'complete' && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => onSelectResult(file.result)}
-              >
-                View
-              </Button>
-            )}
+            <div className="flex items-center gap-2">
+              {file.status === 'unprocessed' && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onProcess(file.id)}
+                >
+                  Process
+                </Button>
+              )}
+              {file.status === 'complete' && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onSelectResult(file.result)}
+                >
+                  View
+                </Button>
+              )}
+            </div>
           </div>
         ))}
       </div>
