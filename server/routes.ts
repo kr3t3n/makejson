@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import multer from "multer";
 import type { Multer } from "multer";
 import { processText } from "./lib/aiProcessor";
+import AdmZip from "adm-zip";
 
 const upload = multer({
   limits: {
@@ -99,7 +100,34 @@ export function registerRoutes(app: Express): Server {
         throw new Error(`Failed to extract text from ${fileType.toUpperCase()} file: ${error.message}`);
       }
       
-      // Process with OpenAI
+      let contents: { filename: string; content: string }[] = [];
+
+      // Handle zip files
+      if (fileType === 'zip') {
+        try {
+          const zip = new AdmZip(req.file.buffer);
+          const zipEntries = zip.getEntries();
+
+          for (const entry of zipEntries) {
+            if (!entry.isDirectory) {
+              const content = entry.getData().toString('utf8');
+              contents.push({
+                filename: entry.entryName,
+                content
+              });
+            }
+          }
+        } catch (zipError) {
+          throw new Error(`Failed to extract zip file: ${zipError.message}`);
+        }
+      } else {
+        contents.push({
+          filename: req.file.originalname,
+          content: fileContent
+        });
+      }
+
+      // Process with AI
       const model = req.body.model || 'openai';
       const apiKey = req.body.apiKey;
       
@@ -107,7 +135,25 @@ export function registerRoutes(app: Express): Server {
         return res.status(400).send('API key is required');
       }
 
-      const result = await processText(fileContent, model, apiKey);
+      // Process all contents and combine results
+      const results = await Promise.all(
+        contents.map(async ({ filename, content }) => {
+          const processedContent = await processText(content, model, apiKey);
+          return {
+            filename,
+            content: processedContent
+          };
+        })
+      );
+
+      // If there's only one file, return its content directly
+      // Otherwise, return an object with all processed files
+      const result = results.length === 1 
+        ? results[0].content
+        : {
+            type: 'multi_file',
+            files: results
+          };
       
       res.json(result);
     } catch (error: any) {

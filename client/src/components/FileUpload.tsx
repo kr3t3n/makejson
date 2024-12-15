@@ -10,6 +10,8 @@ export default function FileUpload({ onFilesUploaded }: FileUploadProps) {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: onFilesUploaded,
     accept: {
+      // Archives
+      'application/zip': ['.zip'],
       // Document formats
       'text/plain': ['.txt'],
       'text/csv': ['.csv'],
