@@ -48,9 +48,17 @@ export default function FileUpload({ onFilesUploaded }: FileUploadProps) {
         <p className="text-lg font-medium">
           {isDragActive ? 'Drop files here' : 'Drag & drop files here'}
         </p>
-        <p className="text-sm text-muted-foreground">
-          Support for TXT, CSV, PDF, and DOCX files
-        </p>
+        <div className="space-y-1">
+          <p className="text-xs text-muted-foreground">
+            Documents: PDF, DOCX, TXT, CSV, XLSX
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Code: JS/TS, HTML, CSS, PHP, SQL, Python, JSON, XML, MD
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Archives: ZIP
+          </p>
+        </div>
       </div>
     </div>
   );
