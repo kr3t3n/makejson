@@ -22,8 +22,18 @@ export function registerRoutes(app: Express): Server {
         return res.status(400).send('No file uploaded');
       }
 
-      // Read file content as text
-      const fileContent = req.file.buffer.toString('utf-8');
+      // Extract content based on file type
+      let fileContent: string;
+      const fileType = req.file.originalname.split('.').pop()?.toLowerCase();
+
+      if (fileType === 'docx') {
+        const mammoth = await import('mammoth');
+        const result = await mammoth.extractRawText({ buffer: req.file.buffer });
+        fileContent = result.value;
+      } else {
+        // For text files, read directly
+        fileContent = req.file.buffer.toString('utf-8');
+      }
       
       // Process with OpenAI
       const model = req.body.model || 'openai';
