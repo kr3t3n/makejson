@@ -31,7 +31,7 @@ function App() {
               <ThemeToggle />
             </div>
             {useLocation()[0] === "/" && (
-              <div className="hidden md:block flex-1 max-w-3xl ml-8">
+              <div className="flex-1 max-w-full md:max-w-3xl md:ml-8">
                 <ApiKeyManager
                   selectedModel={selectedModel}
                   onModelSelect={setSelectedModel}
