@@ -7,7 +7,7 @@ import ProcessingStatus from "../components/ProcessingStatus";
 import { AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import ApiKeyManager, { type AiModel } from "../components/ApiKeyManager";
-import { getApiKey } from "@/lib/keyStorage";
+import { getApiKey, getOpenRouterModel } from "@/lib/keyStorage";
 import { processFile } from "@/lib/api";
 import ThemeToggle from "@/components/ThemeToggle";
 
@@ -62,7 +62,7 @@ export default function Home({ selectedModel, onModelSelect }: HomeProps) {
     ));
 
     try {
-      const result = await processFile(file, selectedModel, apiKey);
+      const result = await processFile(file, selectedModel, apiKey, getOpenRouterModel() ?? undefined);
 
       setFiles(prev => prev.map(f =>
         f.id === fileId 

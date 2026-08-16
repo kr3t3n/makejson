@@ -12,7 +12,7 @@ export default function Privacy() {
           <p>
             makejson.online is a static page that runs in your browser. Files you drop in
             are read locally. Your AI API key is kept in session storage for this tab only
-            and is sent straight to the provider you picked (OpenAI, Anthropic, or Google).
+            and is sent straight to the provider you picked (OpenAI, Anthropic, Google, or OpenRouter).
             We do not operate a server that receives your files or keys.
           </p>
           <h2>2. What we do not collect</h2>

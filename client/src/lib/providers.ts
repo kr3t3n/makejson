@@ -1,18 +1,26 @@
 /**
- * Direct browser calls to the three supported AI providers.
+ * Direct browser calls to the supported AI providers.
  *
- * All three allow cross-origin requests from a browser, so there is no server
- * in the middle: the user's key goes straight from their tab to the provider
+ * These providers allow cross-origin requests from a browser, so there is no
+ * server in the middle: the user's key goes straight from their tab to the provider
  * and is never seen by makejson.online.
  */
 
-export type AiModel = "openai" | "anthropic" | "gemini";
+export type AiModel = "openai" | "anthropic" | "gemini" | "openrouter";
 
-export const MODEL_IDS: Record<AiModel, string> = {
+export const MODEL_IDS: Record<Exclude<AiModel, "openrouter">, string> = {
   openai: "gpt-4o-mini",
   anthropic: "claude-3-5-haiku-latest",
   gemini: "gemini-2.0-flash",
 };
+
+/** Known-good OpenRouter slugs. Visitors can also type any other model id. */
+export const OPENROUTER_PRESETS = [
+  { id: "openai/gpt-4o-mini", label: "GPT-4o-mini (fast)" },
+  { id: "anthropic/claude-sonnet-4", label: "Claude Sonnet 4" },
+] as const;
+
+export const DEFAULT_OPENROUTER_MODEL = "openai/gpt-4o-mini";
 
 const SYSTEM_PROMPT = `You are a data structuring assistant that ALWAYS responds with valid JSON. Your task is to analyze document content and convert it to a structured JSON format. IMPORTANT: Your entire response must be a single valid JSON object, with no additional text or explanation.
 
@@ -159,10 +167,36 @@ async function callGemini(text: string, apiKey: string): Promise<any> {
   return parseJson(content, "Gemini");
 }
 
+async function callOpenRouter(text: string, apiKey: string, modelId: string): Promise<any> {
+  const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+      "HTTP-Referer": "https://makejson.online",
+      "X-Title": "makejson.online",
+    },
+    body: JSON.stringify({
+      model: modelId,
+      messages: [
+        { role: "system", content: SYSTEM_PROMPT },
+        { role: "user", content: clean(text) },
+      ],
+    }),
+  });
+
+  if (!response.ok) await failOn(response, "OpenRouter");
+  const data = await response.json();
+  const content = data.choices?.[0]?.message?.content;
+  if (!content) throw new Error("No content returned from OpenRouter");
+  return parseJson(content, "OpenRouter");
+}
+
 export async function processText(
   text: string,
   model: AiModel,
   apiKey: string,
+  openrouterModel?: string,
 ): Promise<any> {
   switch (model) {
     case "openai":
@@ -171,6 +205,12 @@ export async function processText(
       return callAnthropic(text, apiKey);
     case "gemini":
       return callGemini(text, apiKey);
+    case "openrouter":
+      return callOpenRouter(
+        text,
+        apiKey,
+        openrouterModel?.trim() || DEFAULT_OPENROUTER_MODEL,
+      );
     default:
       throw new Error(`Unsupported AI model: ${model}`);
   }

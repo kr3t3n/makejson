@@ -2,7 +2,14 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { storeApiKey, hasApiKey, clearApiKey } from "@/lib/keyStorage";
+import {
+  storeApiKey,
+  hasApiKey,
+  clearApiKey,
+  storeOpenRouterModel,
+  getOpenRouterModel,
+} from "@/lib/keyStorage";
+import { DEFAULT_OPENROUTER_MODEL, OPENROUTER_PRESETS } from "@/lib/providers";
 import { Eye, EyeOff, Trash } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
@@ -11,8 +18,16 @@ import { cn } from "@/lib/utils";
 import openaiIcon from "@/assets/openai.svg";
 import anthropicIcon from "@/assets/anthropic.svg";
 import geminiIcon from "@/assets/gemini.svg";
+import openrouterIcon from "@/assets/openrouter.svg";
 
-export type AiModel = "openai" | "anthropic" | "gemini";
+export type AiModel = "openai" | "anthropic" | "gemini" | "openrouter";
+
+const PROVIDER_LABELS: Record<AiModel, string> = {
+  openai: "OpenAI",
+  anthropic: "Anthropic",
+  gemini: "Gemini",
+  openrouter: "OpenRouter",
+};
 
 interface ApiKeyManagerProps {
   onModelSelect: (model: AiModel) => void;
@@ -22,6 +37,9 @@ interface ApiKeyManagerProps {
 export default function ApiKeyManager({ onModelSelect, selectedModel }: ApiKeyManagerProps) {
   const [showKey, setShowKey] = useState(false);
   const [apiKey, setApiKey] = useState("");
+  const [openrouterModel, setOpenrouterModel] = useState(
+    () => getOpenRouterModel() || DEFAULT_OPENROUTER_MODEL,
+  );
   const { toast } = useToast();
 
   const handleSaveKey = () => {
@@ -38,7 +56,7 @@ export default function ApiKeyManager({ onModelSelect, selectedModel }: ApiKeyMa
     setApiKey("");
     toast({
       title: "API Key Saved",
-      description: `${selectedModel.toUpperCase()} API key has been saved securely`,
+      description: `${PROVIDER_LABELS[selectedModel]} API key has been saved securely`,
     });
   };
 
@@ -47,8 +65,13 @@ export default function ApiKeyManager({ onModelSelect, selectedModel }: ApiKeyMa
     setApiKey("");
     toast({
       title: "API Key Cleared",
-      description: `${selectedModel.toUpperCase()} API key has been removed`,
+      description: `${PROVIDER_LABELS[selectedModel]} API key has been removed`,
     });
+  };
+
+  const handleOpenRouterModel = (value: string) => {
+    setOpenrouterModel(value);
+    storeOpenRouterModel(value);
   };
 
   const hasKey = hasApiKey(selectedModel);
@@ -57,13 +80,14 @@ export default function ApiKeyManager({ onModelSelect, selectedModel }: ApiKeyMa
     { id: "openai", name: "GPT-4o-mini", icon: openaiIcon },
     { id: "anthropic", name: "3.5 Haiku", icon: anthropicIcon },
     { id: "gemini", name: "2.0 Flash", icon: geminiIcon },
+    { id: "openrouter", name: "OpenRouter", icon: openrouterIcon },
   ] as const;
 
   return (
     <Card className="border-0 shadow-none bg-transparent">
       <CardContent className="p-0">
         <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4">
-          <div className="grid grid-cols-3 md:flex gap-2">
+          <div className="grid grid-cols-2 md:flex gap-2">
             {models.map((model) => (
               <Button
                 key={model.id}
@@ -118,9 +142,38 @@ export default function ApiKeyManager({ onModelSelect, selectedModel }: ApiKeyMa
           </div>
         </div>
 
+        {selectedModel === "openrouter" && (
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-2">
+            <Input
+              value={openrouterModel}
+              onChange={(e) => handleOpenRouterModel(e.target.value)}
+              placeholder={DEFAULT_OPENROUTER_MODEL}
+              aria-label="OpenRouter model"
+              className="text-sm sm:flex-1"
+            />
+            <div className="flex flex-wrap gap-2">
+              {OPENROUTER_PRESETS.map((preset) => (
+                <Button
+                  key={preset.id}
+                  type="button"
+                  variant={openrouterModel === preset.id ? "default" : "outline"}
+                  size="sm"
+                  className={cn(
+                    "h-8 text-xs",
+                    openrouterModel === preset.id && "dark:bg-white/90 dark:text-background dark:hover:bg-white",
+                  )}
+                  onClick={() => handleOpenRouterModel(preset.id)}
+                >
+                  {preset.label}
+                </Button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {!hasKey && (
           <p className="text-sm text-muted-foreground mt-2">
-            Please enter your {selectedModel.toUpperCase()} API key to start processing files
+            Please enter your {PROVIDER_LABELS[selectedModel]} API key to start processing files
           </p>
         )}
       </CardContent>

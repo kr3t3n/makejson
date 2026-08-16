@@ -11,10 +11,11 @@ makejson.online has nowhere to upload it to.
 
 ## Features
 
-- **Bring your own key** — OpenAI, Anthropic or Google Gemini
+- **Bring your own key** — OpenAI, Anthropic, Google Gemini, or OpenRouter
   - OpenAI `gpt-4o-mini`
   - Anthropic `claude-3-5-haiku-latest`
   - Google `gemini-2.0-flash`
+  - OpenRouter (pick a model, e.g. `openai/gpt-4o-mini` or `anthropic/claude-sonnet-4`)
 - **Wide file format support**
   - Documents: PDF, DOCX, TXT, CSV, XLSX
   - Code: JS/TS, HTML, CSS, PHP, SQL, Python, JSON, XML, MD

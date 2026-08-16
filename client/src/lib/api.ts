@@ -53,6 +53,7 @@ export async function processFile(
   file: File,
   model: AiModel,
   apiKey: string,
+  openrouterModel?: string,
 ): Promise<any> {
   if (file.size > MAX_FILE_BYTES) {
     throw new Error(`"${file.name}" is larger than 10MB.`);
@@ -68,10 +69,10 @@ export async function processFile(
 
       // Single chunk is the common case — keep its shape unchanged.
       if (parts.length === 1) {
-        return { filename, content: await processText(parts[0], model, apiKey) };
+        return { filename, content: await processText(parts[0], model, apiKey, openrouterModel) };
       }
 
-      const processed = await mapPool(parts, MAX_IN_FLIGHT, (part) => processText(part, model, apiKey));
+      const processed = await mapPool(parts, MAX_IN_FLIGHT, (part) => processText(part, model, apiKey, openrouterModel));
       return {
         filename,
         content: {
