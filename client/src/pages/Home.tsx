@@ -8,6 +8,7 @@ import { AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import ApiKeyManager, { type AiModel } from "../components/ApiKeyManager";
 import { getApiKey } from "@/lib/keyStorage";
+import { processFile } from "@/lib/api";
 import ThemeToggle from "@/components/ThemeToggle";
 
 type ProcessingFile = {
@@ -43,7 +44,8 @@ export default function Home({ selectedModel, onModelSelect }: HomeProps) {
 
   const handleProcess = async (fileId: string) => {
     const fileToProcess = files.find(f => f.id === fileId);
-    if (!fileToProcess || !('file' in fileToProcess)) return;
+    if (!fileToProcess?.file) return;
+    const file = fileToProcess.file;
 
     const apiKey = getApiKey(selectedModel);
     if (!apiKey) {
@@ -59,24 +61,10 @@ export default function Home({ selectedModel, onModelSelect }: HomeProps) {
       f.id === fileId ? { ...f, status: 'processing' } : f
     ));
 
-    const formData = new FormData();
-    formData.append('file', fileToProcess.file);
-    formData.append('model', selectedModel);
-    formData.append('apiKey', apiKey);
-
     try {
-      const response = await fetch('/api/process', {
-        method: 'POST',
-        body: formData
-      });
+      const result = await processFile(file, selectedModel, apiKey);
 
-      if (!response.ok) {
-        throw new Error(await response.text());
-      }
-
-      const result = await response.json();
-
-      setFiles(prev => prev.map(f => 
+      setFiles(prev => prev.map(f =>
         f.id === fileId 
           ? { ...f, status: 'complete', result }
           : f

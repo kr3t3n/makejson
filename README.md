@@ -1,133 +1,82 @@
 # makejson.online
 
-Convert various document formats into structured JSON using AI. This application leverages state-of-the-art AI models to analyze and transform documents into well-structured JSON format, making it easier to work with unstructured data.
+Convert documents into structured JSON using the AI provider of your choice.
+
+**It runs entirely in your browser.** There is no backend: your files are parsed
+locally in the tab, and the extracted text goes straight from your browser to the
+AI provider using your own API key. Nothing is uploaded to makejson.online, because
+makejson.online has nowhere to upload it to.
 
 ![API Configuration](image.png)
 
 ## Features
 
-- **Multiple AI Model Support**
-  - OpenAI GPT-4o-mini
-  - Anthropic Claude 3.5 Haiku
-  - Google Gemini 2.0 Flash
-
-- **Wide File Format Support**
+- **Bring your own key** — OpenAI, Anthropic or Google Gemini
+  - OpenAI `gpt-4o-mini`
+  - Anthropic `claude-3-5-haiku-latest`
+  - Google `gemini-2.0-flash`
+- **Wide file format support**
   - Documents: PDF, DOCX, TXT, CSV, XLSX
-  - Code Files: JS/TS, HTML, CSS, PHP, SQL, Python, JSON, XML, MD
-  - Archives: ZIP (processes all compatible files within)
+  - Code: JS/TS, HTML, CSS, PHP, SQL, Python, JSON, XML, MD
+  - Archives: ZIP (every readable file inside is processed)
+- **Local processing**
+  - PDF text via `pdf.js`, DOCX via `mammoth`, spreadsheets via `SheetJS`, archives via `JSZip`
+  - Large documents are chunked before being sent to the model
+  - macOS/editor cruft (`__MACOSX`, `.DS_Store`) is filtered out of archives
 
-- **Advanced Processing**
-  - Intelligent content extraction
-  - Maintains document structure
-  - Handles large files through chunking
-  - Batch processing support
+## Privacy
 
-- **Security & Privacy**
-  - Client-side API key storage
-  - No server-side data retention
-  - Secure file processing
+- Your API key lives in `sessionStorage` and is cleared when you close the tab.
+- File contents never touch a server owned by this project.
+- The only outbound request is the one your browser makes to your chosen AI provider.
 
-## Getting Started
+That said: the extracted text *is* sent to that provider under your own account,
+so their terms and data policies apply. Don't feed it anything you wouldn't paste
+into their console yourself.
 
-### Prerequisites
+## Running locally
 
-- Node.js 18+ or Node.js 20+
-- npm or yarn
-- API key from one of the supported AI providers:
-  - OpenAI
-  - Anthropic
-  - Google (for Gemini)
-
-### Installation
-
-1. Clone the repository
-```bash
-git clone https://github.com/yourusername/makejson.online.git
-cd makejson.online
-```
-
-2. Install dependencies
 ```bash
 npm install
+npm run dev      # http://localhost:5173
 ```
 
-3. Start the development server
+Build a production bundle:
+
 ```bash
-npm run dev
+npm run build    # static files land in dist/
+npm run preview
 ```
 
-The application will be available at `http://localhost:5000`.
+`dist/` is a plain static site — host it anywhere that serves files.
 
-## Usage
+## Deploying
 
-1. **Configure API Key**
-   - Select your preferred AI model (OpenAI, Anthropic, or Gemini)
-   - Enter your API key for the selected service
-   - The key is stored securely in your browser's session storage
+The build uses a relative base path and hash-based routing, so the same `dist/`
+works whether it is served from a domain root or a subdirectory, with no server
+rewrite rules required.
 
-2. **Upload Files**
-   - Drag and drop files into the upload area
-   - Multiple files can be uploaded simultaneously
-   - ZIP files will be automatically extracted and processed
+## Tech stack
 
-3. **Process Files**
-   - Click the "Process" button for each file
-   - Monitor progress in the Processing Status section
-   - View the structured JSON output in the preview panel
+React 18, TypeScript, Vite, Tailwind CSS, shadcn/ui, wouter.
 
-4. **View Results**
-   - JSON preview with syntax highlighting
-   - Copy or download the processed JSON
-   - View individual file results from batch processing
-
-## Development
-
-### Tech Stack
-
-- **Frontend**
-  - React 18
-  - TypeScript
-  - Tailwind CSS
-  - shadcn/ui components
-  - React Query for data fetching
-
-- **Backend**
-  - Express.js
-  - Multer for file handling
-  - Multiple AI service integrations
-
-### Project Structure
-
-```
-├── client/                 # Frontend React application
-│   ├── src/
-│   │   ├── components/    # React components
-│   │   ├── hooks/        # Custom React hooks
-│   │   ├── lib/          # Utility functions
-│   │   └── pages/        # Page components
-├── server/                # Backend Express application
-│   ├── lib/              # Backend utilities
-│   └── routes.ts         # API routes
-└── public/               # Static assets
-```
-
-## Security & Privacy
-
-- API keys are stored only in the browser's session storage
-- Files are processed in memory and not stored on the server
-- No data is retained after processing
-- All processing happens in real-time
+Version 2 removed the Express server, the Postgres/Drizzle setup and the SMTP
+contact form that the original Replit build depended on. None of them were needed
+for the tool to do its job, and all of them were things that could break. Design
+tokens that used to be generated from `theme.json` by a Replit-only Vite plugin are
+now checked into `client/src/index.css`.
 
 ## Contributing
 
-Contributions are welcome! Please read our [Contributing Guidelines](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+Issues and pull requests welcome at
+[github.com/kr3t3n/makejson](https://github.com/kr3t3n/makejson).
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT — see [LICENSE](LICENSE).
 
 ## Support
 
-Like makejson.online? [Buy me a coffee](https://www.buymeacoffee.com/georgipep) ☕
+Like makejson.online? [Buy me a coffee](https://buymeacoffee.com/georgipep) ☕
 
-Created by [Georgi](https://x.com/georgipep)
+Created by [Georgi](https://x.com/georgipep) · part of [aithings.online](https://aithings.online)

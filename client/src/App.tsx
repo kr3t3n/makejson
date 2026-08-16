@@ -1,4 +1,5 @@
-import { Switch, Route, useLocation } from "wouter";
+import { Switch, Route, Router, useLocation } from "wouter";
+import { useHashLocation } from "wouter/use-hash-location";
 import { Card, CardContent } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
 import { ThemeProvider } from "@/hooks/use-theme";
@@ -13,6 +14,16 @@ import { useState } from "react";
 import type { AiModel } from "@/components/ApiKeyManager";
 
 function App() {
+  return (
+    // Hash routing keeps deep links working whether the build is served from a
+    // domain root or a GitHub Pages subpath, with no server rewrite rules.
+    <Router hook={useHashLocation}>
+      <AppShell />
+    </Router>
+  );
+}
+
+function AppShell() {
   const [selectedModel, setSelectedModel] = useState<AiModel>("openai");
   return (
     <ThemeProvider>
@@ -22,7 +33,7 @@ function App() {
             <div className="flex flex-col md:flex-row md:items-center md:h-16">
               <div className="flex items-center justify-between h-16 md:h-auto">
                 <div className="flex items-center gap-4">
-                  <a href="/" className="flex-shrink-0">
+                  <a href="#/" className="flex-shrink-0">
                     <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-primary/90 to-primary/70 dark:from-primary/90 dark:to-primary/80 bg-clip-text text-transparent dark:text-primary-foreground">
                       makejson.online
                     </h1>
