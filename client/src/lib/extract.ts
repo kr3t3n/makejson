@@ -11,6 +11,11 @@ export type ExtractedFile = {
   content: string;
 };
 
+export const MAX_FILE_BYTES = 10 * 1024 * 1024;
+export const MAX_TOTAL_BYTES = 30 * 1024 * 1024;
+const MAX_ZIP_ENTRIES = 200;
+const MAX_ZIP_EXPANSION = 20;
+
 const CODE_EXTENSIONS = [
   "js", "jsx", "ts", "tsx", "css", "html", "htm", "php",
   "sql", "py", "json", "xml", "md", "markdown", "csv", "txt",
@@ -105,9 +110,13 @@ async function extractZip(data: ArrayBuffer): Promise<ExtractedFile[]> {
   const JSZip = (await import("jszip")).default;
   const zip = await JSZip.loadAsync(data);
   const out: ExtractedFile[] = [];
+  const entries = Object.values(zip.files).filter((entry) => !entry.dir);
+  if (entries.length > MAX_ZIP_ENTRIES) {
+    throw new Error(`Archive has too many files (max ${MAX_ZIP_ENTRIES}).`);
+  }
 
-  for (const entry of Object.values(zip.files)) {
-    if (entry.dir) continue;
+  let expanded = 0;
+  for (const entry of entries) {
     // Skip macOS and editor cruft that would otherwise burn tokens.
     if (entry.name.startsWith("__MACOSX/") || entry.name.endsWith(".DS_Store")) {
       continue;
@@ -115,6 +124,10 @@ async function extractZip(data: ArrayBuffer): Promise<ExtractedFile[]> {
     if (!ZIP_READABLE.includes(extensionOf(entry.name))) continue;
 
     const bytes = await entry.async("arraybuffer");
+    expanded += bytes.byteLength;
+    if (expanded > data.byteLength * MAX_ZIP_EXPANSION || expanded > MAX_TOTAL_BYTES) {
+      throw new Error("Archive expands beyond the size limit.");
+    }
     try {
       out.push({ filename: entry.name, content: await extractBytes(bytes, entry.name) });
     } catch (error: any) {
@@ -136,6 +149,9 @@ async function extractZip(data: ArrayBuffer): Promise<ExtractedFile[]> {
  * A ZIP fans out into one entry per readable file it contains.
  */
 export async function extractFile(file: File): Promise<ExtractedFile[]> {
+  if (file.size > MAX_FILE_BYTES) {
+    throw new Error(`"${file.name}" is larger than 10MB.`);
+  }
   const data = await file.arrayBuffer();
 
   if (extensionOf(file.name) === "zip") {

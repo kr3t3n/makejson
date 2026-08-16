@@ -124,12 +124,14 @@ async function callAnthropic(text: string, apiKey: string): Promise<any> {
 
 async function callGemini(text: string, apiKey: string): Promise<any> {
   const url =
-    `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_IDS.gemini}:generateContent` +
-    `?key=${encodeURIComponent(apiKey)}`;
+    `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_IDS.gemini}:generateContent`;
 
   const response = await fetch(url, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "x-goog-api-key": apiKey,
+    },
     body: JSON.stringify({
       systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
       contents: [

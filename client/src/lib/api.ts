@@ -1,8 +1,23 @@
-import { extractFile } from "./extract";
+import { extractFile, MAX_FILE_BYTES, MAX_TOTAL_BYTES } from "./extract";
 import { processText, type AiModel } from "./providers";
 
 /** Roughly the amount of text we hand to a model in one request. */
 const CHUNK_SIZE = 100_000;
+const MAX_IN_FLIGHT = 3;
+
+async function mapPool<T, R>(items: T[], limit: number, fn: (item: T) => Promise<R>): Promise<R[]> {
+  const out: R[] = new Array(items.length);
+  let next = 0;
+  async function worker() {
+    while (next < items.length) {
+      const i = next++;
+      out[i] = await fn(items[i]);
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(limit, Math.max(items.length, 1)) }, () => worker()));
+  return out;
+}
+
 
 /** Split on paragraph boundaries where possible so chunks stay readable. */
 function chunk(text: string): string[] {
@@ -39,10 +54,16 @@ export async function processFile(
   model: AiModel,
   apiKey: string,
 ): Promise<any> {
+  if (file.size > MAX_FILE_BYTES) {
+    throw new Error(`"${file.name}" is larger than 10MB.`);
+  }
   const extracted = await extractFile(file);
+  const totalChars = extracted.reduce((n, f) => n + f.content.length, 0);
+  if (totalChars > MAX_TOTAL_BYTES) {
+    throw new Error("Extracted text is larger than the 30MB cap.");
+  }
 
-  const results = await Promise.all(
-    extracted.map(async ({ filename, content }) => {
+  const results = await mapPool(extracted, MAX_IN_FLIGHT, async ({ filename, content }) => {
       const parts = chunk(content);
 
       // Single chunk is the common case — keep its shape unchanged.
@@ -50,9 +71,7 @@ export async function processFile(
         return { filename, content: await processText(parts[0], model, apiKey) };
       }
 
-      const processed = await Promise.all(
-        parts.map((part) => processText(part, model, apiKey)),
-      );
+      const processed = await mapPool(parts, MAX_IN_FLIGHT, (part) => processText(part, model, apiKey));
       return {
         filename,
         content: {
@@ -61,8 +80,7 @@ export async function processFile(
           chunks: processed,
         },
       };
-    }),
-  );
+    });
 
   if (results.length === 1) {
     return results[0].content;

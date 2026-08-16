@@ -31,7 +31,8 @@ export default function FileUpload({ onFilesUploaded }: FileUploadProps) {
       'text/markdown': ['.md', '.markdown'],
       'text/xml': ['.xml']
     },
-    multiple: true
+    multiple: true,
+    maxSize: 10 * 1024 * 1024,
   });
 
   return (

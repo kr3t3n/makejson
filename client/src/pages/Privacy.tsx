@@ -8,23 +8,22 @@ export default function Privacy() {
           <CardTitle>Privacy Policy</CardTitle>
         </CardHeader>
         <CardContent className="prose dark:prose-invert">
-          <h2>1. Data Collection</h2>
+          <h2>1. What stays on your machine</h2>
           <p>
-            We only collect the minimum amount of data necessary to provide our service. This includes:
+            makejson.online is a static page that runs in your browser. Files you drop in
+            are read locally. Your AI API key is kept in session storage for this tab only
+            and is sent straight to the provider you picked (OpenAI, Anthropic, or Google).
+            We do not operate a server that receives your files or keys.
           </p>
-          <ul>
-            <li>Files you upload for processing</li>
-            <li>API keys you provide (stored securely in your browser's session storage)</li>
-          </ul>
-
-          <h2>2. Data Usage</h2>
+          <h2>2. What we do not collect</h2>
           <p>
-            Your files are processed in real-time and are not stored on our servers. API keys are only stored temporarily in your browser's session storage and are never transmitted to our servers.
+            We do not upload your documents to makejson.online. We do not store API keys.
+            Closing the tab clears the key. There is no account and no analytics script.
           </p>
-
-          <h2>3. Third-party Services</h2>
+          <h2>3. Third-party providers</h2>
           <p>
-            We use third-party AI services (OpenAI, Anthropic, Google) for processing your files. Please refer to their respective privacy policies for information about how they handle your data. makejson.online is operated by Mangia Studios Limited.
+            The provider you choose sees the extracted text and the key you supply. Their
+            privacy policies apply to that request. makejson.online is operated by Mangia Studios Limited.
           </p>
         </CardContent>
       </Card>

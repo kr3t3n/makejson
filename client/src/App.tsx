@@ -33,7 +33,7 @@ function AppShell() {
             <div className="flex flex-col md:flex-row md:items-center md:h-16">
               <div className="flex items-center justify-between h-16 md:h-auto">
                 <div className="flex items-center gap-4">
-                  <a href="/" className="flex-shrink-0">
+                  <a href="#/" className="flex-shrink-0">
                     <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-primary/90 to-primary/70 dark:from-primary/90 dark:to-primary/80 bg-clip-text text-transparent dark:text-primary-foreground">
                       makejson.online
                     </h1>
